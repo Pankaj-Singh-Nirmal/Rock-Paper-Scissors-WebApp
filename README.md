@@ -17,7 +17,7 @@ Game rules: https://en.wikipedia.org/wiki/Rock_paper_scissors
 
 ## Build
 Execute mvn clean install. It will start building process with test validations.
-If process will be successful, a fat jar will be created in target folder with all dependencies: Rock-Paper-Scissors-WebApp-0.0.1-SNAPSHOT.jar
+If process will be successful, a fat jar will be created in target folder with all dependencies: rock-paper-scissors.jar
 
 ## Game extension
 A Rock, paper, scissors, lizard, spock may be an extension for the current version of the game. Implementation ideas are as follows:
