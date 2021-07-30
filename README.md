@@ -3,7 +3,7 @@ Game rules: https://en.wikipedia.org/wiki/Rock_paper_scissors
 
 ## Game modes:
 - 1 Player: Player plays against computer
-- 2 Players: 2 players plays against each other
+- 2 Players: 2 players play against each other
 - Alternate: Game format switches after every game
 
 ## Stack
