@@ -1,6 +1,11 @@
 # Rock-Paper-Scissors-WebApp
 Game rules: https://en.wikipedia.org/wiki/Rock_paper_scissors
 
+## Live Demo:
+Game can be played on a machine with following docker commands:
+  **docker pull pankajsn/rock-paper-scissors**
+  **docker run -p 8080:8080 pankajsn/rock-paper-scissors**
+
 ## Game modes:
 - 1 Player: Player plays against computer
 - 2 Players: 2 players play against each other
