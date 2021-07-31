@@ -22,11 +22,32 @@ Game can be played on a machine with following docker commands:
 
 ## Build
 Execute mvn clean install. It will start building process with test validations.
-If process will be successful, a fat jar will be created in target folder with all dependencies: rock-paper-scissors.jar
+If process will be successful, a war will be created in target folder with all dependencies: rock-paper-scissors.war
 
 ## Game extension
-A Rock, paper, scissors, lizard, spock may be an extension for the current version of the game. Implementation ideas are as follows:
-- Add required values (LIZARD and SPOCK) in the GameOptions enum
-- Increase the array size with appropriate values in the getResult(int player1Input, int player2Input) from class GameServiceImpl
-- Add appropriate request handlers in the MainController class
-- Add appropriate views
+A Rock, paper, scissors, lizard, spock may be an extension for the current version of the game. Implementation ideas are as follows:\
+step 1: add two more values in enum GameOptions in package pl.rock.paper.scissors.model\
+		The new enum looks like this:
+		
+		public enum GameOptions 
+		{
+			ROCK,
+			PAPER,
+			SCISSORS,
+			LIZARD,	// new
+			SPOCK;	// new
+		}
+		
+		
+step 2: update Map winOptions in method getResult() from class GameServiceImpl 
+		in package pl.rock.paper.scissors.serviceImpl as follows:
+			
+			Map<String, String> winOptions = new HashMap<>();
+			winOptions.put("ROCK", "PAPER, SPOCK");
+			winOptions.put("PAPER", "SCISSORS, LIZARD");
+			winOptions.put("SCISSORS", "ROCK, SPOCK");
+			winOptions.put("LIZARD", "ROCK, SCISSORS");
+			winOptions.put("SPOCK", "PAPER, LIZARD");
+		
+step 3: Add images for LIZARD and SPOCK with name lizard.png and spock.png respectively.\
+step 4: Add the newly created images in the respective view pages as player options. 
