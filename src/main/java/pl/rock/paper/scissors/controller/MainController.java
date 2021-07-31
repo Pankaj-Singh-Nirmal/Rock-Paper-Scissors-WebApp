@@ -16,6 +16,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import pl.rock.paper.scissors.service.GameService;
+import pl.rock.paper.scissors.util.RockPaperScissorsUtility;
 
 /**
  * Controller of the application. RequestDispatcher accepts the client request and
@@ -76,7 +77,8 @@ public class MainController
 		/** If the game format is ALTERNATE, then scores will be reset to zero for 
 		 * both players.
 		 */
-		gameService.resetScore(score, alternateGame);
+		if(alternateGame)
+			gameService.resetScore(score);
 		
 		model.addAttribute("onePlayerGameFormat", "yes")
 			 .addAttribute("player1Score", score.get("player1"))
@@ -91,25 +93,24 @@ public class MainController
 	 * 
 	 * @param playerOneSelection is bound to a web request parameter
 	 * @param model add the supplied attribute under the supplied name
+	 * @throws Exception if player's selected option is not in enum GameOptions
 	 * @return returns view for playAgain-page.jsp
 	 */
 	@GetMapping("/processOnePlayerGame")
-	public String showOnePlayerGameResultPage(@RequestParam String playerOneSelection, Model model) 
+	public String showOnePlayerGameResultPage(@RequestParam String playerOneSelection, Model model) throws Exception 
 	{
-		int arrayIndexFromPlayer1Input = gameService.getArrayIndexFromPlayerInput(playerOneSelection);
+		/** Returns random computer choice **/
+		String computerInput = RockPaperScissorsUtility.getComputerInput();
 		
-		String computerInput = gameService.getComputerInput();
-		int arrayIndexFromComputerInput = gameService.getArrayIndexFromPlayerInput(computerInput);
-		
-		/** Decides who is the winner **/
-		String result = gameService.getResult(arrayIndexFromPlayer1Input, arrayIndexFromComputerInput);
+		/** Returns the resulting comment **/
+		String result = gameService.getResult(playerOneSelection, computerInput);
 		
 		/** After the winner is decided, score is incremented for the respective player **/
 		gameService.incrementScore(score, result);
 		
 		model.addAttribute("gameFormat", "onePlayerGame")
-			 .addAttribute("playerOneSelectionImgUrl", gameService.getImageUrl(playerOneSelection))
-			 .addAttribute("computerSelectionImgUrl", gameService.getImageUrl(computerInput))
+			 .addAttribute("playerOneSelectionImgUrl", RockPaperScissorsUtility.getImageUrl(playerOneSelection))
+			 .addAttribute("computerSelectionImgUrl", RockPaperScissorsUtility.getImageUrl(computerInput))
 			 .addAttribute("result", result)
 			 .addAttribute("player1Score", score.get("player1"))
 			 .addAttribute("player2Score", score.get("player2"));
@@ -132,7 +133,8 @@ public class MainController
 	@GetMapping("/twoPlayerGame")
 	public String loadTwoPlayerGamePage(Model model, SessionStatus sessionStatus) 
 	{
-		gameService.resetScore(score, alternateGame);
+		if(alternateGame)
+			gameService.resetScore(score);
 			
 		model.addAttribute("twoPlayerGameFormat", "yes")
 			 .addAttribute("player1Score", score.get("player1"))
@@ -175,28 +177,27 @@ public class MainController
 	 * @param model add the supplied attribute under the supplied name
 	 * @param session identify a user across more than one page request and store 
 	 * 		  information about that user
+	 * @throws Exception if player's selected option is not in enum GameOptions
 	 * @return returns the request to /playAgain
 	 */
 	@PostMapping("/processTwoPlayerGame-player-2") // Post mapping so that score will not increment unfairly on page reload
 	public String showTwoPlayerGameResultPage(@RequestParam String playerTwoSelection, 
 											  Model model, 
 											  HttpSession session, 
-											  RedirectAttributes redirectAttributes) 
+											  RedirectAttributes redirectAttributes) throws Exception 
 	{
 		/** Fetches the value for @SessionAttributes("playerOneSelection") **/
 		String playerOneSelection = (String) session.getAttribute("playerOneSelection");
 		
-		int arrayIndexFromPlayer1Input = gameService.getArrayIndexFromPlayerInput(playerOneSelection);
-		int arrayIndexFromPlayer2Input = gameService.getArrayIndexFromPlayerInput(playerTwoSelection);
-		
-		String result = gameService.getResult(arrayIndexFromPlayer1Input, arrayIndexFromPlayer2Input);
+		/** Returns the resulting comment **/
+		String result = gameService.getResult(playerOneSelection, playerTwoSelection);
 		
 		gameService.incrementScore(score, result);
 		
-		/** PRG Pattern **/
+		/** Post Redirect Get (PRG) Pattern **/
 		redirectAttributes.addFlashAttribute("gameFormat", "twoPlayerGame")
-						  .addFlashAttribute("playerOneSelectionImgUrl", gameService.getImageUrl(playerOneSelection))
-						  .addFlashAttribute("playerTwoSelectionImgUrl", gameService.getImageUrl(playerTwoSelection))
+						  .addFlashAttribute("playerOneSelectionImgUrl", RockPaperScissorsUtility.getImageUrl(playerOneSelection))
+						  .addFlashAttribute("playerTwoSelectionImgUrl", RockPaperScissorsUtility.getImageUrl(playerTwoSelection))
 						  .addFlashAttribute("result", result)
 						  .addFlashAttribute("player1Score", score.get("player1"))
 						  .addFlashAttribute("player2Score", score.get("player2"));

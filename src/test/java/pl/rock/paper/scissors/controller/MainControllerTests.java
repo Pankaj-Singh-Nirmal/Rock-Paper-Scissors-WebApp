@@ -146,13 +146,15 @@ class MainControllerTests
 	void shouldShowTwoPlayerGameResultPage() throws Exception 
 	{	
 		/** given **/
-		String requestParam = "ROCK";
+		String sessionAttribute = "ROCK";
+		String requestParam = "PAPER";
 		String viewName = "redirect:/playAgain";
 		
 		mockMvc.perform
 			(post("/processTwoPlayerGame-player-2")
-			   .param("playerTwoSelection", requestParam))	/** when **/
-			   .andExpect(status().isFound())				/** then **/
+			   .sessionAttr("playerOneSelection", sessionAttribute) /** when **/
+			   .param("playerTwoSelection", requestParam))		   
+			   .andExpect(status().isFound())					    /** then **/
 			   .andExpect(view().name(viewName));
 	}
 	
